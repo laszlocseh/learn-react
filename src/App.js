@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  var coolTest = "Cool test here 2";
 
+function Hello(props) {
+  return <div>Hello {props.name}!</div>
+}
+
+function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -12,9 +15,8 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <p>
-          {coolTest}
-        </p>
+        <Hello name='valaki'/>
+        <Hello name='senki'/>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -34,7 +36,7 @@ class App2 extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Menjel haza!</h1>
         </header>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
@@ -45,3 +47,4 @@ class App2 extends Component {
 }
 
 export default App;
+export {App2};
