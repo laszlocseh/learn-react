@@ -3,8 +3,78 @@ import logo from './logo.svg';
 import './App.css';
 
 
-function Hello(props) {
-  return <div>Hello {props.name}!</div>
+class Clock extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      "date": new Date(), 
+      "count": 1,
+      "click": 0
+    };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+    this.timerID = setInterval(
+      () => this.calculate(),
+      1000
+    );
+  }
+
+  tick() {
+    this.setState({date: new Date()})
+  }
+
+  calculate () {
+    this.setState((state) => ({
+      count: state.count + this.props.increment
+    }));
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  handleClick() {
+    this.setState((state) => ({
+      click: state.click + 1
+    }));
+  }
+
+  render () {
+    // var date = new Date();
+    return (
+      <div>
+        <div>The time is {this.state.date.toLocaleTimeString()}!</div>
+        <div>The count is {this.state.count}!</div>
+        <button onClick={() => this.handleClick()}>Clicked {this.state.click} times!</button>
+      </div>
+    )
+  }
+}
+
+class List extends Component {
+  render() {
+    return <li>{this.props.item}</li>
+  }
+}
+
+class ToDoList extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {list: ['valami', 'semmi', 'nemtudom']}
+  }
+
+  render() {
+    const myList = this.state.list.map((i) => <List item={i}/>)
+    
+    return (
+      <ul>{myList}</ul>
+    )
+  }
 }
 
 function App() {
@@ -12,39 +82,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Hello name='valaki'/>
-        <Hello name='senki'/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Clock increment={3}/>
+        <ToDoList />
       </header>
     </div>
   );
 }
 
-class App2 extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Menjel haza!</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
-
 export default App;
-export {App2};
