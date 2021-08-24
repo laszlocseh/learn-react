@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -8,13 +8,15 @@ class Clock extends Component {
     super(props);
     this.state = {
       "date": new Date(), 
-      "count": 1,
+      "count": 0,
       "click": 0
     };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    this.timerID = setInterval(
+  this.timerID = setInterval(
       () => this.tick(),
       1000
     );
@@ -29,9 +31,9 @@ class Clock extends Component {
   }
 
   calculate () {
-    this.setState((state) => ({
-      count: state.count + this.props.increment
-    }));
+    this.setState({
+      count: this.state.count + this.props.increment
+    });
   }
 
   componentWillUnmount() {
@@ -39,9 +41,9 @@ class Clock extends Component {
   }
 
   handleClick() {
-    this.setState((state) => ({
-      click: state.click + 1
-    }));
+    this.setState({
+      click: this.state.click + 1
+    });
   }
 
   render () {
@@ -50,29 +52,78 @@ class Clock extends Component {
       <div>
         <div>The time is {this.state.date.toLocaleTimeString()}!</div>
         <div>The count is {this.state.count}!</div>
-        <button onClick={() => this.handleClick()}>Clicked {this.state.click} times!</button>
+        <button onClick={this.handleClick}>Clicked {this.state.click} times!</button>
       </div>
     )
   }
 }
 
 class List extends Component {
-  render() {
-    return <li>{this.props.item}</li>
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    console.log(this.props.list);
+    console.log(this.props.item);
+    this.props.list = this.props.list.filter((i) => i.id !== this.props.item.id);
   }
 }
 
 class ToDoList extends Component {
   constructor(props) {
     super(props)
-    this.state = {list: ['valami', 'semmi', 'nemtudom']}
+    const _lista = [
+      {id: 1, text: "valami"},
+      {id: 2, text: "semmi"},
+      {id: 3, text: "nemtudom"}
+    ]
+    this.state = {
+      list: _lista,
+      itemName: ''
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick = item => e => {
+    // console.log(e);
+    // console.log(item);
+    const newList = this.state.list.filter((i) => i.id !== item.id);
+    this.setState({list: newList});
+  }
+
+  handleChange(event) {
+    this.setState({itemName: event.target.value});
+  }
+
+  handleSubmit(event) {
+    const maxId = this.state.list.length ? Math.max.apply(Math, this.state.list.map(function(o) { return o.id; })) : 0;
+
+    this.setState({
+      list: [...this.state.list, ...[{id: maxId + 1, text: this.state.itemName}]]
+    });
+
+    this.setState({itemName: ''});
+    event.preventDefault();
   }
 
   render() {
-    const myList = this.state.list.map((i) => <List item={i}/>)
-    
     return (
-      <ul>{myList}</ul>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" value={this.state.itemName} onChange={this.handleChange}></input>
+          <input type="submit" value="Add"></input>
+        </form>
+        <ul>
+          {
+            this.state.list.map((i) => <li key={i.id} onClick={this.handleClick(i)}>{i.text}</li>)
+          }
+        </ul>
+      </div>
     )
   }
 }
