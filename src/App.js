@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -47,7 +47,6 @@ class Clock extends Component {
   }
 
   render () {
-    // var date = new Date();
     return (
       <div>
         <div>The time is {this.state.date.toLocaleTimeString()}!</div>
@@ -58,17 +57,20 @@ class Clock extends Component {
   }
 }
 
-class List extends Component {
+class ListItem extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(event) {
-    console.log(this.props.list);
-    console.log(this.props.item);
-    this.props.list = this.props.list.filter((i) => i.id !== this.props.item.id);
+    this.props.onItemClick(this.props.item)
   }
+
+  render() {
+    return <li onClick={this.handleClick}>{this.props.item.text}</li>
+  }
+
 }
 
 class ToDoList extends Component {
@@ -86,11 +88,10 @@ class ToDoList extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.handleClick = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick = item => e => {
-    // console.log(e);
+  handleClick(item){
     // console.log(item);
     const newList = this.state.list.filter((i) => i.id !== item.id);
     this.setState({list: newList});
@@ -120,7 +121,7 @@ class ToDoList extends Component {
         </form>
         <ul>
           {
-            this.state.list.map((i) => <li key={i.id} onClick={this.handleClick(i)}>{i.text}</li>)
+            this.state.list.map((i) => <ListItem key={i.id} item={i} onItemClick={this.handleClick}/>)
           }
         </ul>
       </div>
